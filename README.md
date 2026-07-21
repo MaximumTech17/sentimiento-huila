@@ -12,6 +12,8 @@ A **sentiment index** built from regional economic news, classifying each item w
 
 The index is defined as **`(% positive − % negative)`**, scaled −100…+100 — a single, transparent number with no analyst-defined weights. The chart shows its daily evolution across the month, with the monthly average as a dashed line.
 
+> **On the daily chart:** with only a few news items per day, the daily index can only take coarse values (−100, 0, +50, +100…) and never sits exactly on the monthly average. This is sampling volatility, not noise in the method — the signal lives in the aggregate, not in any single day. The notebook includes an optional cell to aggregate **weekly or monthly**, which smooths the series as the sample grows.
+
 ## How the news is captured
 
 News is collected in a separate step from two regional outlets (*Diario La Nación*, *Diario del Huila*), filtered to keep only substantive economic items, and exported as a dataset (`data.xlsx`, included here). This repository focuses on the **analysis**; the scraping code is kept private.
