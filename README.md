@@ -54,7 +54,7 @@ The v1 and v2 files are preserved in this repository (`*_v1.*` and base files) a
 
 A core design decision in **v3** separates the monthly index calculation from model training:
 
-1. **Monthly sentiment index (`sentiment_index.ipynb`):** The index and output charts are scoped strictly to the selected month (`mes = "YYYY-MM"`). Blending August (−6.6) and September (+11.8) together in v2 produced an artificial −3.2 average ("sancocho") that misrepresented both months. Evaluating each month independently provides accurate economic signal.
+1. **Monthly sentiment index (`sentiment_index.ipynb`):** The index and output charts are scoped strictly to the selected month (`mes = "YYYY-MM"`). Blending August (−6.6) and September (+11.8) together in v2 produced an artificial −3.2 average — a muddled number that misrepresented both months. Evaluating each month independently provides accurate economic signal.
 2. **Full-history training for classic NLP (`classic_nlp_tfidf.ipynb`):** While sentiment indices must be period-specific, machine learning baselines benefit from more training data. The entire cumulative historical dataset (`data_labeled.csv`, 93 items across all months) is used to train and evaluate the TF-IDF + Naive Bayes classifier.
 
 ## Bonus: a classic NLP baseline
