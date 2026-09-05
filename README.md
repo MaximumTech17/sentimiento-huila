@@ -1,6 +1,6 @@
 # Regional economic-sentiment index — Huila, Colombia
 
-A **sentiment index** built from regional economic news, classifying each item with a Large Language Model (Google Gemini) and aggregating the result over time. A proof of concept over July 2026 (~43 unique economic news items from two Huila outlets).
+A **sentiment index** built from regional economic news, classifying each item with a Large Language Model (Google Gemini) and aggregating the result over time. A proof of concept, now covering July-September 2026 (93 unique economic news items from two Huila outlets).
 
 **Stack:** Python · pandas · Google Gemini · matplotlib
 
@@ -10,9 +10,9 @@ A **sentiment index** built from regional economic news, classifying each item w
 
 ![Sentiment index](sentiment_index.png)
 
-The index is defined as **`(% positive − % negative)`**, scaled −100…+100 — a single, transparent number with no analyst-defined weights. The chart shows its daily evolution across the month, with the monthly average as a dashed line.
+The index is defined as **`(% positive − % negative)`**, scaled −100…+100 — a single, transparent number with no analyst-defined weights. The chart shows its daily evolution across the period, with the period average as a dashed line.
 
-> **On the daily chart:** with only a few news items per day, the daily index can only take coarse values (−100, 0, +50, +100…) and never sits exactly on the monthly average. This is sampling volatility, not noise in the method — the signal lives in the aggregate, not in any single day. The notebook includes an optional cell to aggregate **weekly or monthly**, which smooths the series as the sample grows.
+> **On the daily chart:** with only a few news items per day, the daily index can only take coarse values (−100, 0, +50, +100…) and never sits exactly on the period average. This is sampling volatility, not noise in the method — the signal lives in the aggregate, not in any single day. The notebook includes an optional cell to aggregate **weekly or monthly**, which smooths the series as the sample grows.
 
 ## How the news is captured
 
@@ -33,10 +33,19 @@ Banco de la República's national sentiment index uses **dictionary methods** �
 ## Limitations (stated on purpose)
 
 - **Source bias:** two outlets, one region → not nationally representative; each paper's editorial line colors the result.
-- **Small sample:** ~43 items over three weeks → a proof of concept, not a robust index. More outlets and history would strengthen it.
+- **Still a small sample:** 93 items over ~2 months → a proof of concept, not a robust index. More outlets and history would strengthen it.
 - **Model dependence:** classification reflects the LLM's judgment; a few borderline items may flip.
 
 Declaring these limits is part of the method — a sentiment index is only as representative as its sources.
+
+### How this evolved
+
+| Run | Sample | Period | Sentiment index |
+|---|---|---|---|
+| v1 | 43 items | Jul 2026 | −2.3 |
+| v2 | 93 items | Jul-Sep 2026 | −3.2 |
+
+The v1 data and charts are kept in this repo (`*_v1.*`) as a record — growing the sample is part of the point, not something to quietly overwrite.
 
 ## Bonus: a classic NLP baseline
 
@@ -51,7 +60,14 @@ Declaring these limits is part of the method — a sentiment index is only as re
 
 The classic model is trained on the LLM's own labels (a *distillation*, not an independent gold standard) — see that notebook's Limitations section for what that does and doesn't prove.
 
-**Real result on this sample:** 44% cross-validated accuracy, and the model **never predicts "neutral"** — with only 8 neutral items out of 43, the classifier collapses that minority class into its neighbors. It's an honest, expected failure mode for bag-of-words on a tiny, imbalanced sample, not a hidden bug — reported here rather than smoothed over.
+**Real result, v1 → v2:**
+
+| Run | Sample | Accuracy | "neutral" precision/recall |
+|---|---|---|---|
+| v1 | 43 items (8 neutral) | 44% | 0.00 / 0.00 |
+| v2 | 93 items (14 neutral) | 56% | 0.00 / 0.00 |
+
+More than doubling the sample raised overall accuracy, but the model **still never predicts "neutral"** even with 14 examples — with negativo/positivo staying the safer bet at that ratio, the classifier keeps collapsing the minority class into its neighbors. It's an honest, expected failure mode for bag-of-words on a small, imbalanced sample, not a hidden bug — reported here rather than smoothed over.
 
 ## Run it
 
