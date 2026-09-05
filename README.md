@@ -38,12 +38,29 @@ Banco de la República's national sentiment index uses **dictionary methods** �
 
 Declaring these limits is part of the method — a sentiment index is only as representative as its sources.
 
+## Bonus: a classic NLP baseline
+
+`classic_nlp_tfidf.ipynb` takes the same news and the same sentiment labels, but classifies them with the traditional NLP pipeline instead of an LLM call: **TF-IDF vectorization + Multinomial Naive Bayes**, evaluated with stratified 5-fold cross-validation (the sample is too small for a held-out test split). It also shows the most informative words per class — something an LLM call doesn't hand you for free.
+
+| | LLM (`sentiment_index.ipynb`) | Classic (`classic_nlp_tfidf.ipynb`) |
+|---|---|---|
+| How it reads text | Full context | Bag-of-words (TF-IDF) |
+| Cost per run | API calls | Free, runs offline |
+| Interpretability | Black box | Inspectable feature weights |
+| Handles negation (*"no hubo crisis"*) | Yes | No — known blind spot |
+
+The classic model is trained on the LLM's own labels (a *distillation*, not an independent gold standard) — see that notebook's Limitations section for what that does and doesn't prove.
+
+**Real result on this sample:** 44% cross-validated accuracy, and the model **never predicts "neutral"** — with only 8 neutral items out of 43, the classifier collapses that minority class into its neighbors. It's an honest, expected failure mode for bag-of-words on a tiny, imbalanced sample, not a hidden bug — reported here rather than smoothed over.
+
 ## Run it
 
 ```bash
 pip install -r requirements.txt
 ```
-Open `sentiment_index.ipynb` and run all cells (you'll be asked for your own Gemini API key). It reads `data.xlsx`, classifies each item and rebuilds the index and chart.
+Open `sentiment_index.ipynb` and run all cells (you'll be asked for your own Gemini API key). It reads `data.xlsx`, classifies each item, saves the labels to `data_labeled.csv`, and builds the index and chart.
+
+Then, optionally, open `classic_nlp_tfidf.ipynb` and run all cells — no API key needed, it reuses `data_labeled.csv`.
 
 ---
 
